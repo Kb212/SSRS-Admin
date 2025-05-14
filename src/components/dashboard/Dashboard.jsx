@@ -22,16 +22,18 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ordersResponse = await fetch("http://127.0.0.1:8000/api/orders");
+        const ordersResponse = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/orders`
+        );
         const ordersData = await ordersResponse.json();
 
-        const tablesResponse = await fetch("http://127.0.0.1:8000/api/tables");
+        const tablesResponse = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/tables`
+        );
         const tablesData = await tablesResponse.json();
         const sortedTables = Array.isArray(tablesData)
           ? tablesData.sort((a, b) => a.table_number - b.table_number)
           : [];
-
-        
 
         setOrders(ordersData.orders);
         setTables(sortedTables);
@@ -145,6 +147,21 @@ function Dashboard() {
       order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1), // Capitalize the first letter
   }));
 
+  const renderCustomLabel = ({ cx, cy, percent }) => {
+    return (
+      <text
+        x={cx}
+        y={cy}
+        fill="#333"
+        textAnchor="middle"
+        dominantBaseline="central"
+        className="text-sm font-bold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -240,6 +257,8 @@ function Dashboard() {
                         innerRadius={36}
                         outerRadius={50}
                         dataKey="value"
+                        label={renderCustomLabel} // Add custom label
+                        labelLine={false} // Disable label lines
                       >
                         {data.map((entry, i) => (
                           <Cell

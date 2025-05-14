@@ -19,9 +19,9 @@ function AddMenuItem() {
     const fetchData = async () => {
       try {
         const [categoriesRes, tagsRes, ingredientsRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/categories"),
-          fetch("http://127.0.0.1:8000/api/tags"),
-          fetch("http://127.0.0.1:8000/api/ingredients"),
+          fetch("http://192.168.43.100:8000/api/categories"),
+          fetch("http://192.168.43.100:8000/api/tags"),
+          fetch("http://192.168.43.100:8000/api/ingredients"),
         ]);
 
         const categories = await categoriesRes.json();
@@ -104,7 +104,7 @@ function AddMenuItem() {
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/menuitems", {
+      const response = await fetch("http://192.168.43.100:8000/api/menuitems", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

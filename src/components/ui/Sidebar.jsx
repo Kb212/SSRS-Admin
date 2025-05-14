@@ -20,7 +20,7 @@ const menuItems = [
   },
   { icon: <FaUtensils size={20} />, label: "Menu Items", link: "menuitems" },
   { icon: <MdTableRestaurant size={20} />, label: "Tables", link: "tables" },
-  { icon: <FaPen size={20} />, label: "Feedback", link: "feedback" },
+  { icon: <FaPen size={20} />, label: "Feedbacks", link: "feedbacks" },
   {
     icon: <FaTags size={20} />,
     label: "Components",

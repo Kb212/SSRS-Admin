@@ -34,7 +34,7 @@ function AddIngredientsTagsCategories() {
   // Fetch tags from API
   const fetchTags = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/tags");
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/tags`);
       const data = await response.json();
       setTags(data);
     } catch (error) {
@@ -45,7 +45,7 @@ function AddIngredientsTagsCategories() {
   // Fetch ingredients from API
   const fetchIngredients = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/ingredients");
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/ingredients`);
       const data = await response.json();
       setIngredients(data.ingredients);
     } catch (error) {
@@ -56,7 +56,7 @@ function AddIngredientsTagsCategories() {
   // Fetch categories from API
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/categories");
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/categories`);
       const data = await response.json();
       setCategories(data);
     } catch (error) {
@@ -71,7 +71,7 @@ function AddIngredientsTagsCategories() {
 
     setIsLoading((prev) => ({ ...prev, tags: true }));
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/tags", {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/tags`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ function AddIngredientsTagsCategories() {
     ];
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/ingredients", {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/ingredients`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -155,7 +155,7 @@ function AddIngredientsTagsCategories() {
 
     setIsLoading((prev) => ({ ...prev, categories: true }));
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/categories", {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/categories`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ function AddIngredientsTagsCategories() {
   // Delete a tag
   const deleteTag = async (id) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/tags/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/tags/${id}`, {
         method: "DELETE",
       });
 
@@ -209,7 +209,7 @@ function AddIngredientsTagsCategories() {
   const deleteIngredient = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/ingredients/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/ingredients/${id}`,
         {
           method: "DELETE",
         }
@@ -235,7 +235,7 @@ function AddIngredientsTagsCategories() {
   const deleteCategory = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/categories/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/categories/${id}`,
         {
           method: "DELETE",
         }

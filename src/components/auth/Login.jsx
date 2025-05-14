@@ -14,7 +14,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login", {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#333]"
             />
           </div>
 
@@ -83,7 +83,7 @@ function Login() {
               </label>
               <Link
                 to="/forgot-password"
-                className="text-xs text-blue-600 hover:underline"
+                className="text-xs text-[#333] hover:underline"
               >
                 Forgot password?
               </Link>
@@ -95,14 +95,14 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#333]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition duration-300"
+            className="w-full py-2 px-4 bg-[#333] hover:bg-[#333] text-white font-bold rounded-md transition duration-300"
           >
             {loading ? "Logging in..." : "Login"}
           </button>

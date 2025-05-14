@@ -1,17 +1,31 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Sidebar from "./components/ui/Sidebar";
 import TopNavbar from "./components/ui/TopNavbar";
 import OrderList from "./components/orderlist/OrderList";
 import Login from "./components/auth/Login";
-import PrivateRoute from "./components/auth/PrivateRoute"; 
+import PrivateRoute from "./components/auth/PrivateRoute";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import AddOrders from "./components/orderlist/AddOrders";
 import MenuItems from "./components/menuitems/Menuitems";
-import AddMenuItem from "./components/menuitems/AddMenuItem";
+import AddMenuItems from "./components/menuitems/AddMenuItems";
 import AddIngredientsTagsCategories from "./components/IngredientsTagsCategories/AddIngredientsTagsCategories";
 import Tables from "./components/tables/Tables";
+import PasswordReset from "./components/auth/PasswordReset";
+import UpdateMenuItem from "./components/menuitems/UpdateMenuItem";
+import UpdateOrder from "./components/orderlist/UpdateOrder";
+import StaffManagement from "./components/staff/StaffManagement";
+import Attendance from "./components/staff/Attendance";
+import Feedbacks from "./components/feedbacks/Feedbacks";
+import StaffShiftAssignment from "./components/staff/StaffShiftAssignment";
+import ShiftTemplateManagement from "./components/staff/ShiftTemplateManagement";
+import ShiftCalendarView from "./components/staff/ShiftCalendarView";
 
 function Layout() {
   return (
@@ -19,7 +33,7 @@ function Layout() {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <TopNavbar />
-        <main className="flex-1 p-6">
+        <main className="flex-1 sm:p-6">
           <Routes>
             {/* Protected Pages */}
             {/* Dashboard */}
@@ -48,6 +62,14 @@ function Layout() {
                 </PrivateRoute>
               }
             />
+            <Route
+              path="/orders/:orderid"
+              element={
+                <PrivateRoute>
+                  <UpdateOrder />
+                </PrivateRoute>
+              }
+            />
             {/* Menu Items */}
             <Route
               path="/menuitems"
@@ -61,7 +83,15 @@ function Layout() {
               path="/menuitems/add-menuitem"
               element={
                 <PrivateRoute>
-                  <AddMenuItem />
+                  <AddMenuItems />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/menuitems/:menuitemsid"
+              element={
+                <PrivateRoute>
+                  <UpdateMenuItem />
                 </PrivateRoute>
               }
             />
@@ -83,6 +113,48 @@ function Layout() {
                 </PrivateRoute>
               }
             />
+            {/* Staff */}
+            <Route
+              path="/staff"
+              element={
+                <PrivateRoute>
+                  <StaffManagement />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/staff/attendance"
+              element={
+                <PrivateRoute>
+                  <Attendance />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/staff/add-to-shift"
+              element={
+                <PrivateRoute>
+                  <StaffShiftAssignment />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/staff/create-shift"
+              element={
+                <PrivateRoute>
+                  <ShiftTemplateManagement />
+                </PrivateRoute>
+              }
+            />
+            {/* Feedbacks */}
+            <Route
+              path="/feedbacks"
+              element={
+                <PrivateRoute>
+                  <Feedbacks />
+                </PrivateRoute>
+              }
+            />
             {/* You can add more protected routes easily here later */}
           </Routes>
         </main>
@@ -93,7 +165,9 @@ function Layout() {
 
 function App() {
   const location = useLocation();
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/forgot-password";
+  const isAuthPage = ["/login", "/forgot-password", "/reset-password"].includes(
+    location.pathname
+  );
 
   return (
     <div className="App">
@@ -101,6 +175,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<PasswordReset />} />
         </Routes>
       ) : (
         <Layout />

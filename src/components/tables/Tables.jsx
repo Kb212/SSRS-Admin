@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ConfirmationDialog from "../ui/ConfirmationDialog";
 import { FaTrash } from "react-icons/fa6";
+import MessageModal from "../ui/MessageModal";
 
 const Tables = () => {
   const [tables, setTables] = useState([]);
@@ -8,6 +9,8 @@ const Tables = () => {
   const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [modalStatus, setModalStatus] = useState(null);
+  const [modalMessage, setModalMessage] = useState("");
 
   // Form states
   const [bulkAddForm, setBulkAddForm] = useState({
@@ -27,7 +30,7 @@ const Tables = () => {
   });
 
   // API base URL
-  const API_BASE_URL = "http://127.0.0.1:8000";
+  const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
   // Fetch all tables on component mount
   useEffect(() => {
@@ -56,7 +59,7 @@ const Tables = () => {
     }
   };
 
-  // Add a single table
+  // Add tables in amount
   const addSingleTable = async (e) => {
     e.preventDefault();
     if (!singleAddForm.tableNumber) return;
@@ -75,7 +78,12 @@ const Tables = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setModalStatus(false);
+        setModalMessage(
+          data.message || "Failed to add table. Please try again."
+        );
+        return;
       }
 
       // Reset form and refresh tables
@@ -86,11 +94,12 @@ const Tables = () => {
       fetchTables();
     } catch (error) {
       console.error("Error adding table:", error);
-      setError("Failed to add table. Please try again.");
+      setModalStatus(false);
+      setModalMessage("An unexpected error occurred. Please try again.");
     }
   };
 
-  // Add tables in bulk
+  // Add tables in Range
   const addBulkTables = async (e) => {
     e.preventDefault();
     if (!bulkAddForm.startTableNumber || !bulkAddForm.endTableNumber) return;
@@ -110,7 +119,12 @@ const Tables = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setModalStatus(false);
+        setModalMessage(
+          data.message || "Failed to add tables in range. Please try again."
+        );
+        return;
       }
 
       // Reset form and refresh tables
@@ -121,8 +135,9 @@ const Tables = () => {
       });
       fetchTables();
     } catch (error) {
-      console.error("Error adding tables in bulk:", error);
-      setError("Failed to add tables in bulk. Please try again.");
+      console.error("Error adding tables in range:", error);
+      setModalStatus(false);
+      setModalMessage("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -137,13 +152,19 @@ const Tables = () => {
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setModalStatus(false);
+        setModalMessage(
+          data.message || "Failed to the table. Please try again."
+        );
+        return;
       }
 
       fetchTables();
     } catch (error) {
-      console.error("Error deleting table:", error);
-      setError("Failed to delete table. Please try again.");
+      console.error("Error deleting the table:", error);
+      setModalStatus(false);
+      setModalMessage("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -166,7 +187,12 @@ const Tables = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setModalStatus(false);
+        setModalMessage(
+          data.message || "Failed to delete tables in range. Please try again."
+        );
+        return;
       }
 
       // Reset form and refresh tables
@@ -176,8 +202,9 @@ const Tables = () => {
       });
       fetchTables();
     } catch (error) {
-      console.error("Error deleting tables in bulk:", error);
-      setError("Failed to delete table in range. Please try again.");
+      console.error("Error deleting tables in range:", error);
+      setModalStatus(false);
+      setModalMessage("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -190,18 +217,21 @@ const Tables = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setModalStatus(false);
+        setModalMessage(
+          data.message || "Failed to delete all tables. Please try again."
+        );
+        return;
       }
-
-      const data = await response.json();
-      console.log(data.message);
 
       // Close confirmation dialog and refresh tables
       setShowConfirmation(false);
       fetchTables();
     } catch (error) {
       console.error("Error deleting all tables:", error);
-      setError("Failed to delete all tables. Please try again.");
+      setModalStatus(false);
+      setModalMessage("An unexpected error occurred. Please try again.");
     } finally {
       setIsDeleting(false);
     }
@@ -223,7 +253,7 @@ const Tables = () => {
               className="px-4 py-2 bg-[#333] text-white rounded-md"
               disabled={isDeleting}
             >
-              Delete All
+              {isDeleting ? "Deleting..." : "Delete All"}
             </button>
           </div>
         </div>
@@ -231,11 +261,12 @@ const Tables = () => {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Tables Grid */}
           <div className="bg-white p-6 rounded-lg shadow-sm flex-1 max-h-[42rem] overflow-y-auto scrollbar-hide">
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(5rem,_1fr))] gap-4">
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(5rem,_1fr))] gap-4 relative">
+              {tables.length === 0 && <p className="absolute text-center w-full">No Tables Available!<br />You can add them here using the input fields!</p>}
               {tables.map((table) => (
                 <div
                   key={table.table_number}
-                  className={`relative flex items-center justify-between p-3 rounded-md ${
+                  className={`relative flex items-center justify-between px-3 py-2 rounded-md ${
                     table.table_status === "occupied"
                       ? "bg-[#333] text-white"
                       : "border-2 border-[#333] text-[#333]"
@@ -432,10 +463,27 @@ const Tables = () => {
 
       {showConfirmation && (
         <ConfirmationDialog
-          message={<>Are you sure you want to delete every table?<br />The tables will be deleted even if they are occupied!</>}
+          message={
+            <>
+              Are you sure you want to delete every table?
+              <br />
+              The tables will be <span className="text-red-600">deleted even if</span> they are <span className="text-red-600">occupied</span>!
+            </>
+          }
           onCancel={() => setShowConfirmation(false)}
           onConfirm={deleteAllTables}
           isLoading={isDeleting}
+        />
+      )}
+
+      {modalStatus !== null && (
+        <MessageModal
+          isItError={!modalStatus}
+          message={modalMessage}
+          closeMessageBackdrop={() => {
+            setModalStatus(null);
+            setModalMessage("");
+          }}
         />
       )}
     </section>

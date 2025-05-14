@@ -4,10 +4,18 @@ import {
   FaArrowUp,
   FaAngleLeft,
   FaAngleRight,
+  FaTrash,
 } from "react-icons/fa6";
 
 // Table Component
-const DynamicTable = ({ columns, data, paginate=true, rowsPerPage=7 }) => {
+const DynamicTable = ({
+  columns,
+  data,
+  onDelete,
+  onRowClick,
+  paginate = true,
+  rowsPerPage = 7,
+}) => {
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -78,7 +86,11 @@ const DynamicTable = ({ columns, data, paginate=true, rowsPerPage=7 }) => {
           </thead>
           <tbody>
             {currentData.map((row, idx) => (
-              <tr key={idx} className="border-t hover:bg-gray-100 cursor-pointer">
+              <tr
+                key={idx}
+                className="border-t hover:bg-gray-100 cursor-pointer"
+                onClick={() => onRowClick && onRowClick(row.id.replace("#", ""))}
+              >
                 {columns.map((col, colIdx) => (
                   <td key={colIdx} className="px-6 py-4 text-sm">
                     {col.accessor === "order_status" ? (
@@ -94,8 +106,6 @@ const DynamicTable = ({ columns, data, paginate=true, rowsPerPage=7 }) => {
                             ? "bg-[#333] text-white"
                             : row[col.accessor] === "Canceled"
                             ? "bg-red-500 text-white"
-                            : row[col.accessor] === "delete"
-                            ? "bg-[#333] text-white"
                             : ""
                         }`}
                       >
@@ -103,6 +113,13 @@ const DynamicTable = ({ columns, data, paginate=true, rowsPerPage=7 }) => {
                           {row[col.accessor]}
                         </span>
                       </div>
+                    ) : col.accessor === "actions" ? (
+                      <button
+                        onClick={(e) => {e.stopPropagation(); onDelete(row.id.replace("#", ""))}}
+                        className="text-[#333] hover:text-red-800"
+                      >
+                        <FaTrash size={16} />
+                      </button>
                     ) : (
                       row[col.accessor] || "-"
                     )}

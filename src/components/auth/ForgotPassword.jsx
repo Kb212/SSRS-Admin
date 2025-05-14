@@ -15,7 +15,7 @@ function ForgotPassword() {
     setMessage("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/forgot-password", {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/admin/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,8 +31,10 @@ function ForgotPassword() {
       }
 
       // Show success message
-      setMessage("If the email is registered, we have sent you a reset link!");
+      setMessage("If the email is registered, we have sent you a reset link! We will redirect you in 10 seconds!");
       setLoading(false);
+      localStorage.setItem("email_to_reset", email);
+      setTimeout(() => navigate("/reset-password"), 10000);
     } catch (error) {
       setError(error.message || "Something went wrong");
       setLoading(false);
@@ -72,21 +74,21 @@ function ForgotPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition duration-300"
+            className="w-full py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-md transition duration-300"
           >
             {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
 
         <div className="mt-4 text-center">
-          <Link to="/login" className="text-xs text-blue-600 hover:underline">
+          <Link to="/login" className="text-xs text-gray-600 hover:underline">
             Remembered your password? Login here
           </Link>
         </div>
